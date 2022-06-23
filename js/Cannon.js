@@ -8,6 +8,7 @@ class Cannon {
     this.cannon_image = loadImage("assets/canon.png");
     this.cannon_base = loadImage("assets/cannonBase.png");
   }
+
   display() {
     
     push();

@@ -6,6 +6,8 @@ const Constraint = Matter.Constraint;
 var engine, world, backgroundImg;
 var canvas, angle, tower, ground, cannon;
 var cannonBall;
+// vetor que guardarah as bolas
+var bolas = [];
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
@@ -14,14 +16,20 @@ function preload() {
 
 function setup() {
   canvas = createCanvas(1200, 600);
+  // criando motor de fisica
   engine = Engine.create();
+  // criando o mundo
   world = engine.world;
-  angle = 20
+  angle = 20;
 
+  // criando o chao
   ground = Bodies.rectangle(0, height - 1, width * 2, 1, { isStatic: true });
+  // adicionando o chao ao mundo
   World.add(world, ground);
 
+  // criando a torre
   tower = Bodies.rectangle(160, 350, 160, 310, { isStatic: true });
+  // adicionando a torre ao mundo
   World.add(world, tower);
 
   cannon = new Cannon(180, 110, 130, 100, angle);
@@ -34,14 +42,31 @@ function draw() {
 
   Engine.update(engine);
 
+  // desenhando o chao
   rect(ground.position.x, ground.position.y, width * 2, 1);
-  push();
+  
+  push(); // congela a configuração anterior
   imageMode(CENTER);
   image(towerImage, tower.position.x, tower.position.y, 160, 310);
-  pop();
+  pop(); // volta a configuração original
 
   cannon.display();
   cannonBall.display();
 }
 
+// funcao tecla pressionada
+function keyPressed()
+{
+  // if eh uma condicao
+  if (keyCode === DOWN_ARROW) {
+    var bolaCanhao = new CannonBall(cannon.x, cannon.y);
+    bolas.push(bolaCanhao);
+  }
+}
 
+function mostrarBolasCanhao(bola, indiceDaBola)
+{
+  if (bola) {
+    bola.display();
+  }
+}
