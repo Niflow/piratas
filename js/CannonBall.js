@@ -20,4 +20,16 @@ class CannonBall {
     image(this.image, pos.x, pos.y, this.raio, this.raio);
     pop();
   }
+
+  atirar()
+  {
+    var novoangulo =cannon.angle -28;
+    novoangulo = novoangulo *(3.14/180);
+    var velocidade = p5.Vector.fromAngle(novoangulo);
+    velocidade.mult(0.5);
+    Body.setStatic(this.body,false);
+    Body.setVelocity(this.body, { x: velocidade.x *(180/3.14), y: velocidade.y * (180/3.14)});
+
+
+  }
 }

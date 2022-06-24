@@ -2,6 +2,7 @@ const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
+const Body = Matter.Body;
 
 var engine, world, backgroundImg;
 var canvas, angle, tower, ground, cannon;
@@ -50,8 +51,12 @@ function draw() {
   image(towerImage, tower.position.x, tower.position.y, 160, 310);
   pop(); // volta a configuração original
 
+  for (let i = 0; i < bolas.length; i++) {
+    mostrarBolasCanhao(bolas[i],i);
+    
+  }
   cannon.display();
-  cannonBall.display();
+  
 }
 
 // funcao tecla pressionada
@@ -61,6 +66,12 @@ function keyPressed()
   if (keyCode === DOWN_ARROW) {
     var bolaCanhao = new CannonBall(cannon.x, cannon.y);
     bolas.push(bolaCanhao);
+  }
+}
+
+function keyReleased(){
+  if (keyCode === DOWN_ARROW) {
+    bolas[bolas.length -1].atirar();
   }
 }
 
