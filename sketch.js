@@ -58,11 +58,8 @@ function draw() {
     
   }
   cannon.mostrar();
-  Objeto.setVelocity(barco.esqueleto, {
-    x: -0.9,
-    y: 0
-  });
-  barco.mostrar();
+  mostrarBarcos();
+
 }
 
 // funcao tecla pressionada
@@ -91,7 +88,23 @@ function mostrarBolasCanhao(bola, indiceDaBola)
 function mostrarBarcos()
 {
   if (barcos.length > 0) {
-
+    if (barcos[barcos.length - 1]  === undefined ||
+      barcos[barcos.length - 1].esqueleto.position.x < width-300) {
+      var positions=[-40,-60,-70,20];
+      var position= random(positions);
+      var barco=new Barco(width,height-100,170,170,position);
+      barcos.push(barco);
+    }
+    for (let i = 0; i < barcos.length; i++) {
+      if (barcos[i]) {
+        Objeto.setVelocity(barcos[i].esqueleto,{
+          x:-0.9,
+          y: 0
+        });
+        barcos[i].mostrar();
+      }
+      
+    }
   } else {
     // criacao do primeiro barco
     var barco = new Barco(width -79, height -60, 170, 170, -80);
