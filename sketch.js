@@ -2,13 +2,14 @@ const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
-const Body = Matter.Body;
+const Objeto = Matter.Body;
 
 var engine, world, backgroundImg;
-var canvas, angle, tower, ground, cannon;
+var canvas, angulo, tower, ground, cannon;
 var cannonBall;
-// vetor que guardarah as bolas
+// vetor que guarda as bolas
 var bolas = [];
+var barcos = [];
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
@@ -21,7 +22,7 @@ function setup() {
   engine = Engine.create();
   // criando o mundo
   world = engine.world;
-  angle = 20;
+  angulo = 20;
 
   // criando o chao
   ground = Bodies.rectangle(0, height - 1, width * 2, 1, { isStatic: true });
@@ -33,7 +34,7 @@ function setup() {
   // adicionando a torre ao mundo
   World.add(world, tower);
 
-  cannon = new Cannon(180, 110, 130, 100, angle);
+  cannon = new Cannon(180, 110, 130, 100, angulo);
   cannonBall = new CannonBall(cannon.x, cannon.y);
 }
 
@@ -51,12 +52,17 @@ function draw() {
   image(towerImage, tower.position.x, tower.position.y, 160, 310);
   pop(); // volta a configuração original
 
+
   for (let i = 0; i < bolas.length; i++) {
-    mostrarBolasCanhao(bolas[i],i);
+    mostrarBolasCanhao(bolas[i], i);
     
   }
-  cannon.display();
-  
+  cannon.mostrar();
+  Objeto.setVelocity(barco.esqueleto, {
+    x: -0.9,
+    y: 0
+  });
+  barco.mostrar();
 }
 
 // funcao tecla pressionada
@@ -79,5 +85,16 @@ function mostrarBolasCanhao(bola, indiceDaBola)
 {
   if (bola) {
     bola.display();
+  }
+}
+
+function mostrarBarcos()
+{
+  if (barcos.length > 0) {
+
+  } else {
+    // criacao do primeiro barco
+    var barco = new Barco(width -79, height -60, 170, 170, -80);
+    barcos.push(barco);
   }
 }
