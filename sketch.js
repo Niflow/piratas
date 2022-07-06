@@ -89,6 +89,8 @@ function mostrarBolasCanhao(bola, indiceDaBola)
 {
   if (bola) {
     bola.mostrar();
+    if (bola.body.position.x >= width || bola.body.position.y >= height - 50) { bola.remover(indiceDaBola); }
+
   }
 }
 
@@ -127,7 +129,8 @@ function colisaoComBarco(indiceBola)
       var teveColisao = Matter.SAT.collides(bolas[indiceBola].body, barcos[i].esqueleto);
 
       if (teveColisao.collided) {
-        console.log('bateu');
+        barcos[i].remover(i);
+        bolas[indiceBola].remover(indiceBola);
       }
     }
   }

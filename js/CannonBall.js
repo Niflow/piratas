@@ -43,4 +43,14 @@ class CannonBall {
       y: velocidade.y * (180/3.14)
     });
   }
+
+  remover(indiceDaBola)
+    {
+        Objeto.setVelocity(this.body,{x:0,y:0});
+        setTimeout(() => {
+            World.remove(world,bolas[indiceDaBola].body);
+            delete bolas[indiceDaBola];
+        }, 1000);
+
+    }
 }

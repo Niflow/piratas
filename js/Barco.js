@@ -33,4 +33,13 @@ class Barco {
         image(this.imagem, 0, this.posBarco, this.largura, this.altura);
         pop();
     }
+    remover(indiceDoBarco)
+    {
+        Objeto.setVelocity(this.esqueleto,{x:0,y:0});
+        setTimeout(() => {
+            World.remove(world,barcos[indiceDoBarco].esqueleto);
+            delete barcos[indiceDoBarco];
+        }, 1000);
+
+    }
 }
