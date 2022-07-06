@@ -12,13 +12,11 @@ class Cannon {
   mostrar() {
     
     if (keyIsDown(RIGHT_ARROW) && this.angulo < 70) {
-      console.log(this.angulo);
-      this.angulo += 0.02;
+      this.angulo += 1;
     }
     
     if (keyIsDown(LEFT_ARROW) && this.angulo > -30) {
-      console.log(this.angulo);
-      this.angulo -= 0.02;
+      this.angulo -= 1;
     }
 
     push();
@@ -28,6 +26,6 @@ class Cannon {
     image(this.cannon_image, 0, 0, this.width, this.height);
     pop();
     image(this.cannon_base, 70, 20, 200, 200);
-    noFill();
+    // noFill();
   }
 }

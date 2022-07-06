@@ -22,7 +22,9 @@ function setup() {
   engine = Engine.create();
   // criando o mundo
   world = engine.world;
-  angulo = 20;
+
+  angleMode(DEGREES);
+  angulo = 15;
 
   // criando o chao
   ground = Bodies.rectangle(0, height - 1, width * 2, 1, { isStatic: true });
@@ -35,31 +37,36 @@ function setup() {
   World.add(world, tower);
 
   cannon = new Cannon(180, 110, 130, 100, angulo);
-  cannonBall = new CannonBall(cannon.x, cannon.y);
 }
 
 function draw() {
-  background(189);
   image(backgroundImg, 0, 0, width, height);
 
   Engine.update(engine);
 
   // desenhando o chao
-  rect(ground.position.x, ground.position.y, width * 2, 1);
+  push();
+  translate(ground.position.x, ground.position.y);
+  rectMode(CENTER);
+  rect(0, 0, width * 2, 1);
+  pop();
   
   push(); // congela a configuração anterior
+  translate(tower.position.x, tower.position.y);
+  rotate(tower.angle);
   imageMode(CENTER);
-  image(towerImage, tower.position.x, tower.position.y, 160, 310);
+  image(towerImage, 0, 0, 160, 310);
   pop(); // volta a configuração original
 
-
-  for (let i = 0; i < bolas.length; i++) {
-    mostrarBolasCanhao(bolas[i], i);
-    
-  }
-  cannon.mostrar();
   mostrarBarcos();
 
+  // repeticao = loop
+  for (let i = 0; i < bolas.length; i++) {
+    mostrarBolasCanhao(bolas[i], i);
+    colisaoComBarco(i);  
+  }
+
+  cannon.mostrar();
 }
 
 // funcao tecla pressionada
@@ -74,14 +81,14 @@ function keyPressed()
 
 function keyReleased(){
   if (keyCode === DOWN_ARROW) {
-    bolas[bolas.length -1].atirar();
+    bolas[bolas.length - 1].atirar();
   }
 }
 
 function mostrarBolasCanhao(bola, indiceDaBola)
 {
   if (bola) {
-    bola.display();
+    bola.mostrar();
   }
 }
 
@@ -109,5 +116,19 @@ function mostrarBarcos()
     // criacao do primeiro barco
     var barco = new Barco(width -79, height -60, 170, 170, -80);
     barcos.push(barco);
+  }
+}
+
+function colisaoComBarco(indiceBola)
+{
+  for (let i = 0; i < barcos.length; i++) {
+
+    if (bolas[indiceBola] !== undefined && barcos[i] !== undefined) {
+      var teveColisao = Matter.SAT.collides(bolas[indiceBola].body, barcos[i].esqueleto);
+
+      if (teveColisao.collided) {
+        console.log('bateu');
+      }
+    }
   }
 }
