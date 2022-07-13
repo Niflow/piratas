@@ -51,6 +51,5 @@ class CannonBall {
             World.remove(world,bolas[indiceDaBola].body);
             delete bolas[indiceDaBola];
         }, 1000);
-
     }
 }
