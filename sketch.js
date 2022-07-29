@@ -3,14 +3,13 @@ const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 const Objeto = Matter.Body;
-
 var engine, world, backgroundImg;
 var canvas, angulo, tower, ground, cannon;
 var cannonBall;
 var barcoJson, barcoImg, barcoAnimacao = [];
 var barcoQuebradoJson, barcoQuebradoImg, barcoQuebradoAnimacao = [];
 var aguaEspirraJson, aguaEspirraImg, aguaEspirraAnimacao = [];
-
+var fimdejogo=false;
 // vetor que guarda as bolas
 var bolas = [];
 var barcos = [];
@@ -158,6 +157,11 @@ function mostrarBarcos()
         });
         barcos[i].mostrar();
         barcos[i].animar();
+          var colisao = Matter.SAT.collides(tower,barcos[i].esqueleto);
+          if (colisao.collided && !barcos[i].estaQuebrado) {
+            fimdejogo = true;
+            console.log("fimdejogo")
+          } 
       }
       
     }
