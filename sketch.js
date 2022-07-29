@@ -8,8 +8,8 @@ var engine, world, backgroundImg;
 var canvas, angulo, tower, ground, cannon;
 var cannonBall;
 var barcoJson, barcoImg, barcoAnimacao = [];
-var barcoQuebradoJson, barcoQuebradoImg, barcoQuebradoAnimation = [];
-var aguaEspirraJson, aguaEspirraImg, aguaEspirraAnimation = [];
+var barcoQuebradoJson, barcoQuebradoImg, barcoQuebradoAnimacao = [];
+var aguaEspirraJson, aguaEspirraImg, aguaEspirraAnimacao = [];
 
 // vetor que guarda as bolas
 var bolas = [];
@@ -21,6 +21,10 @@ function preload() {
 
   barcoJson = loadJSON("./assets/barco/barco.json");
   barcoImg = loadImage("./assets/barco/barco.png");
+  barcoQuebradoJson = loadJSON("./assets/barco/barcoQuebrado.json");
+  barcoQuebradoImg = loadImage("./assets/barco/barcoQuebrado.png");
+  aguaEspirraJson = loadJSON("./assets/aguaEspirra/aguaEspirra.json");
+  aguaEspirraImg = loadImage("./assets/aguaEspirra/aguaEspirra.png");
 }
 
 function setup() {
@@ -53,6 +57,15 @@ function setup() {
     var imagem = barcoImg.get(pos.x, pos.y, pos.w, pos.h);
     barcoAnimacao.push(imagem); // vetor
   }
+
+  var aguaEspirraFrames = aguaEspirraJson.frames;
+  for (var gaveta = 0; gaveta < aguaEspirraFrames.length; gaveta++) {
+    var pos = aguaEspirraFrames[gaveta].position;
+    // get significa pegar
+    var imagem = aguaEspirraImg.get(pos.x, pos.y, pos.w, pos.h);
+    aguaEspirraAnimacao.push(imagem); // vetor
+  }
+  
 }
 
 function draw() {
@@ -105,6 +118,7 @@ function mostrarBolasCanhao(bola, indiceDaBola)
 {
   if (bola) {
     bola.mostrar();
+    bola.animar();
     if (bola.body.position.x >= width || bola.body.position.y >= height - 50) { bola.remover(indiceDaBola); }
 
   }
@@ -147,10 +161,13 @@ function colisaoComBarco(indiceBola)
 
       // se houve colisao
       if (teveColisao.collided) {
-        barcos[i].remover(i);
+        if (!barcos[i].estaQuebrado) {
+          barcos[i].remover(i);
         
+          
+        }
         World.remove(world, bolas[indiceBola].body);
-        delete bolas[indiceBola];
+          delete bolas[indiceBola]; 
       }
     }
   }

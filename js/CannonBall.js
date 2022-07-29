@@ -10,7 +10,7 @@ class CannonBall {
     this.body = Bodies.circle(x, y, this.raio, options);
 
     this.image = loadImage("./assets/cannonball.png");
-    // this.animation = [this.image];
+   this.animacao = [this.image];
     World.add(world, this.body);
   }
 
@@ -19,13 +19,13 @@ class CannonBall {
   {
     var angulo = this.body.angle;
     var pos = this.body.position;
-    // var indice = floor(this.velocidade % this.animation.length);
+     var movimento = floor(this.velocidade % this.animacao.length);
 
     push();
     translate(pos.x, pos.y);
     rotate(angulo);
     imageMode(CENTER);
-    image(this.image, 0, 0, this.raio, this.raio);
+    image(this.animacao[movimento], 0, 0, this.raio, this.raio);
     pop();
   }
 
@@ -44,9 +44,15 @@ class CannonBall {
     });
   }
 
+  animar()
+{
+  this.velocidade += 0.05
+}
   remover(indiceDaBola)
     {
         Objeto.setVelocity(this.body,{x:0,y:0});
+        this.animacao = aguaEspirraAnimacao;
+        this.velocitidade = 0.05;
         setTimeout(() => {
             World.remove(world,bolas[indiceDaBola].body);
             delete bolas[indiceDaBola];

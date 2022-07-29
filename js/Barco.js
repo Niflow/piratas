@@ -17,6 +17,7 @@ class Barco {
 
         this.animacao = barcoAnimacao;
         this.velocidade = 0.05;
+        this.estaQuebrado = false;
         
         this.imagem = loadImage("./assets/barco.png");
         this.posBarco = posBarco;
@@ -44,13 +45,18 @@ class Barco {
 
     remover(indiceDoBarco)
     {
-        // para a velocidade do barco
-        Objeto.setVelocity(this.esqueleto,{x:0,y:0});
+        this.animacao = barcoQuebradoAnimacao;
+        this.velocidade = 0.05;
+        this.largura = 300;
+        this.altura = 300;
+        this.estaQuebrado = true;
+        // para a velocidade do barco 
+        //Objeto.setVelocity(this.esqueleto,{x:0,y:0});
         // apaga o barco do mundo e do vetor barcos
         setTimeout(() => {
             World.remove(world,barcos[indiceDoBarco].esqueleto);
             delete barcos[indiceDoBarco];
-        }, 1000);
+        }, 3000);
 
     }
 }
