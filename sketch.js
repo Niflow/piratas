@@ -58,6 +58,14 @@ function setup() {
     barcoAnimacao.push(imagem); // vetor
   }
 
+  var barcoQuebradoFrames = barcoQuebradoJson.frames;
+  for (var gaveta = 0; gaveta < barcoQuebradoFrames.length; gaveta++) {
+    var pos = barcoQuebradoFrames[gaveta].position;
+    // get significa pegar
+    var imagem = barcoQuebradoImg.get(pos.x, pos.y, pos.w, pos.h);
+    barcoQuebradoAnimacao.push(imagem); // vetor
+  }
+
   var aguaEspirraFrames = aguaEspirraJson.frames;
   for (var gaveta = 0; gaveta < aguaEspirraFrames.length; gaveta++) {
     var pos = aguaEspirraFrames[gaveta].position;
@@ -119,7 +127,15 @@ function mostrarBolasCanhao(bola, indiceDaBola)
   if (bola) {
     bola.mostrar();
     bola.animar();
-    if (bola.body.position.x >= width || bola.body.position.y >= height - 50) { bola.remover(indiceDaBola); }
+    
+    if (bola.body.position.y >= height - 50) {
+      bola.remover(indiceDaBola); 
+    }
+
+    if (bola.body.position.x >= width) {
+      World.remove(world, bolas[indiceDaBola].body);
+      delete bolas[indiceDaBola];
+    }
 
   }
 }
@@ -163,11 +179,10 @@ function colisaoComBarco(indiceBola)
       if (teveColisao.collided) {
         if (!barcos[i].estaQuebrado) {
           barcos[i].remover(i);
-        
-          
         }
+
         World.remove(world, bolas[indiceBola].body);
-          delete bolas[indiceBola]; 
+        delete bolas[indiceBola]; 
       }
     }
   }
