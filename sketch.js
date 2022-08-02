@@ -13,6 +13,7 @@ var fimdejogo=false;
 // vetor que guarda as bolas
 var bolas = [];
 var barcos = [];
+var risadaM,explosaoM,aguaM,fundoM;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
@@ -24,6 +25,10 @@ function preload() {
   barcoQuebradoImg = loadImage("./assets/barco/barcoQuebrado.png");
   aguaEspirraJson = loadJSON("./assets/aguaEspirra/aguaEspirra.json");
   aguaEspirraImg = loadImage("./assets/aguaEspirra/aguaEspirra.png");
+  risadaM = loadSound('./assets/assets_pirate_laugh.mp3');
+  explosaoM = loadSound('./assets/assets_cannon_explosion.mp3');
+  aguaM = loadSound('./assets/assets_cannon_water.mp3');
+  fundoM = loadSound('./assets/assets_background_music.mp3');
 }
 
 function setup() {
@@ -118,6 +123,7 @@ function keyPressed()
 function keyReleased(){
   if (keyCode === DOWN_ARROW) {
     bolas[bolas.length - 1].atirar();
+    explosaoM.play();
   }
 }
 
@@ -128,7 +134,8 @@ function mostrarBolasCanhao(bola, indiceDaBola)
     bola.animar();
     
     if (bola.body.position.y >= height - 50) {
-      bola.remover(indiceDaBola); 
+      bola.remover(indiceDaBola);
+      aguaM.play();
     }
 
     if (bola.body.position.x >= width) {
@@ -160,7 +167,7 @@ function mostrarBarcos()
           var colisao = Matter.SAT.collides(tower,barcos[i].esqueleto);
           if (colisao.collided && !barcos[i].estaQuebrado) {
             fimdejogo = true;
-            console.log("fimdejogo")
+            gameover();
           } 
       }
       
@@ -190,4 +197,22 @@ function colisaoComBarco(indiceBola)
       }
     }
   }
+}
+
+function gameover()
+{
+  swal(
+    {
+      title: 'Fim de Jogo!',
+      text: 'Obrigado por Jogar!',
+      imageUrl: './assets/barco.png',
+      imageSize: '150x150',
+      confirmButtonText: 'jogar novamente'
+    },
+    function (isConfirm){
+      if (isConfirm) {
+        location.reload();
+      }
+    }
+  );
 }
