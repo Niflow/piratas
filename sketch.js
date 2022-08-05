@@ -2,217 +2,203 @@ const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
-const Objeto = Matter.Body;
-var engine, world, backgroundImg;
-var canvas, angulo, tower, ground, cannon;
-var cannonBall;
-var barcoJson, barcoImg, barcoAnimacao = [];
-var barcoQuebradoJson, barcoQuebradoImg, barcoQuebradoAnimacao = [];
-var aguaEspirraJson, aguaEspirraImg, aguaEspirraAnimacao = [];
-var fimdejogo=false;
-// vetor que guarda as bolas
-var bolas = [];
-var barcos = [];
-var risadaM,explosaoM,aguaM,fundoM;
+const Body = Matter.Body;
+
+var engine, world, backgroundImg,boat;
+var canvas, angle, tower, ground, cannon;
+var boatSpriteJson, boatSpriteImg;
+var brokenBoatSpriteJson, brokenBoatSpriteImg;
+var waterSplashJson, waterSplashImg;
+var balls = [];
+var boats = [];
+var waterSplahAnimation = [];
+var brokenBoatAnimation = []
+var boatAnimation = []
+var isGameOver = false;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
   towerImage = loadImage("./assets/tower.png");
 
-  barcoJson = loadJSON("./assets/barco/barco.json");
-  barcoImg = loadImage("./assets/barco/barco.png");
-  barcoQuebradoJson = loadJSON("./assets/barco/barcoQuebrado.json");
-  barcoQuebradoImg = loadImage("./assets/barco/barcoQuebrado.png");
-  aguaEspirraJson = loadJSON("./assets/aguaEspirra/aguaEspirra.json");
-  aguaEspirraImg = loadImage("./assets/aguaEspirra/aguaEspirra.png");
-  risadaM = loadSound('./assets/assets_pirate_laugh.mp3');
-  explosaoM = loadSound('./assets/assets_cannon_explosion.mp3');
-  aguaM = loadSound('./assets/assets_cannon_water.mp3');
-  fundoM = loadSound('./assets/assets_background_music.mp3');
+  boatSpriteJson = loadJSON("./assets/boat/boat.json");
+  boatSpriteImg = loadImage("./assets/boat/boat.png");
+
+  brokenBoatSpriteJson = loadJSON("./assets/boat/brokenBoat.json");
+  brokenBoatSpriteImg = loadImage("./assets/boat/brokenBoat.png");
+
+  waterSplashJson = loadJSON("./assets/waterSplash/waterSplash.json");
+  waterSplashImg = loadImage("./assets/waterSplash/waterSplash.png");
 }
 
 function setup() {
   canvas = createCanvas(1200, 600);
-  // criando motor de fisica
   engine = Engine.create();
-  // criando o mundo
   world = engine.world;
-
   angleMode(DEGREES);
-  angulo = 15;
+  angle = 15;
 
-  // criando o chao
   ground = Bodies.rectangle(0, height - 1, width * 2, 1, { isStatic: true });
-  // adicionando o chao ao mundo
   World.add(world, ground);
 
-  // criando a torre
   tower = Bodies.rectangle(160, 350, 160, 310, { isStatic: true });
-  // adicionando a torre ao mundo
   World.add(world, tower);
 
-  cannon = new Cannon(180, 110, 130, 100, angulo);
+  cannon = new Cannon(180, 110, 130, 100, angle);
 
-  // para entrar em cada gaveta do vetor vamos usar o bloco for () {}
-  var barcoFrames = barcoJson.frames;
-  for (var gaveta = 0; gaveta < barcoFrames.length; gaveta++) {
-    var pos = barcoFrames[gaveta].position;
-    // get significa pegar
-    var imagem = barcoImg.get(pos.x, pos.y, pos.w, pos.h);
-    barcoAnimacao.push(imagem); // vetor
+  var boatFrames = boatSpriteJson.frames;
+  for (let i = 0; i < boatFrames.length; i++) {
+    var pos = boatFrames[i].position;
+    var img = boatSpriteImg.get(pos.x, pos.y, pos.w, pos.h);
+    boatAnimation.push(img);
   }
 
-  var barcoQuebradoFrames = barcoQuebradoJson.frames;
-  for (var gaveta = 0; gaveta < barcoQuebradoFrames.length; gaveta++) {
-    var pos = barcoQuebradoFrames[gaveta].position;
-    // get significa pegar
-    var imagem = barcoQuebradoImg.get(pos.x, pos.y, pos.w, pos.h);
-    barcoQuebradoAnimacao.push(imagem); // vetor
+  var brokenBoatFrames = brokenBoatSpriteJson.frames;
+  for (let i = 0; i < brokenBoatFrames.length; i++) {
+    var pos = brokenBoatFrames[i].position;
+    var img = brokenBoatSpriteImg.get(pos.x, pos.y, pos.w, pos.h);
+    brokenBoatAnimation.push(img);
   }
 
-  var aguaEspirraFrames = aguaEspirraJson.frames;
-  for (var gaveta = 0; gaveta < aguaEspirraFrames.length; gaveta++) {
-    var pos = aguaEspirraFrames[gaveta].position;
-    // get significa pegar
-    var imagem = aguaEspirraImg.get(pos.x, pos.y, pos.w, pos.h);
-    aguaEspirraAnimacao.push(imagem); // vetor
+  var waterSplashFrames = waterSplashJson.frames;
+  for (let i = 0; i < waterSplashFrames.length; i++) {
+    var pos = waterSplashFrames[i].position;
+    var img = waterSplashImg.get(pos.x, pos.y, pos.w, pos.h);
+    waterSplahAnimation.push(img);
   }
-  
 }
 
 function draw() {
+  background(189);
   image(backgroundImg, 0, 0, width, height);
 
   Engine.update(engine);
-
-  // desenhando o chao
-  push();
-  translate(ground.position.x, ground.position.y);
-  rectMode(CENTER);
-  rect(0, 0, width * 2, 1);
-  pop();
   
-  push(); // congela a configuração anterior
-  translate(tower.position.x, tower.position.y);
-  rotate(tower.angle);
+  rect(ground.position.x, ground.position.y, width * 2, 1);
+
+  push();  
   imageMode(CENTER);
-  image(towerImage, 0, 0, 160, 310);
-  pop(); // volta a configuração original
+  image(towerImage,tower.position.x, tower.position.y, 160, 310);
+  pop();
 
-  mostrarBarcos();
+  showBoats();
 
-  // repeticao = loop
-  for (let i = 0; i < bolas.length; i++) {
-    mostrarBolasCanhao(bolas[i], i);
-    colisaoComBarco(i);  
+  for (var i = 0; i < balls.length; i++) {
+    showCannonBalls(balls[i], i);
+    collisionWithBoat(i);
   }
 
-  cannon.mostrar();
+  cannon.display();
 }
 
-// funcao tecla pressionada
-function keyPressed()
-{
-  // if eh uma condicao
+function keyPressed() {
   if (keyCode === DOWN_ARROW) {
-    var bolaCanhao = new CannonBall(cannon.x, cannon.y);
-    bolas.push(bolaCanhao);
+    var cannonBall = new CannonBall(cannon.x, cannon.y);
+    cannonBall.trajectory = [];
+    Matter.Body.setAngle(cannonBall.body, cannon.angle);
+    balls.push(cannonBall);
   }
 }
 
-function keyReleased(){
-  if (keyCode === DOWN_ARROW) {
-    bolas[bolas.length - 1].atirar();
-    explosaoM.play();
+function showCannonBalls(ball, index) {
+  if (ball) {
+    ball.display();
+    ball.animate();
+
+    if (ball.body.position.x >= width) {
+      // fazer
+    }
+
+    if (ball.body.position.y  >= height - 50) {
+      ball.remove(index);
+    }
   }
 }
 
-function mostrarBolasCanhao(bola, indiceDaBola)
+function showBoats() 
 {
-  if (bola) {
-    bola.mostrar();
-    bola.animar();
+  // se já tiverem outros navios irá criar outros
+  if (boats.length > 0) {
     
-    if (bola.body.position.y >= height - 50) {
-      bola.remover(indiceDaBola);
-      aguaM.play();
+    if(boats[boats.length - 1] === undefined || 
+      boats[boats.length - 1].body.position.x < width - 300) {
+      
+      var positions = [- 40, - 60, -70, -20];
+      var position = random(positions);
+      var boat = new Boat(
+        width, 
+        height - 100, 
+        170, 
+        170, 
+        position,
+        boatAnimation
+      );
+
+      boats.push(boat);
     }
 
-    if (bola.body.position.x >= width) {
-      World.remove(world, bolas[indiceDaBola].body);
-      delete bolas[indiceDaBola];
-    }
-
-  }
-}
-
-function mostrarBarcos()
-{
-  if (barcos.length > 0) {
-    if (barcos[barcos.length - 1]  === undefined ||
-      barcos[barcos.length - 1].esqueleto.position.x < width-300) {
-      var positions=[-40,-60,-70,20];
-      var position= random(positions);
-      var barco=new Barco(width, height-100, 170, 170, position, barcoAnimacao);
-      barcos.push(barco);
-    }
-    for (let i = 0; i < barcos.length; i++) {
-      if (barcos[i]) {
-        Objeto.setVelocity(barcos[i].esqueleto,{
-          x:-0.9,
-          y: 0
-        });
-        barcos[i].mostrar();
-        barcos[i].animar();
-          var colisao = Matter.SAT.collides(tower,barcos[i].esqueleto);
-          if (colisao.collided && !barcos[i].estaQuebrado) {
-            fimdejogo = true;
-            gameover();
-          } 
+    for (let i = 0; i < boats.length; i++) {
+      if(boats[i]) {
+        Matter.Body.setVelocity(boats[i].body, {x: -0.9, y:0});
+        boats[i].display();
+        boats[i].animate();
+        
+        var collision = Matter.SAT.collides(tower, boats[i].body);
+        
+        if (collision.collided && !boats[i].isBroken) {
+          isGameOver = true;
+          gameOver();
+        }
       }
       
     }
+
   } else {
-    // criacao do primeiro barco
-    var barco = new Barco(width -79, height -60, 170, 170, -80, barcoAnimacao);
-    barcos.push(barco);
+    // se ainda nao tiver navio vai criar o primeiro navio
+    var boat = new Boat (width, height - 60, 170, 170, -60, boatAnimation);
+    boats.push(boat);
   }
 }
 
-function colisaoComBarco(indiceBola)
+function collisionWithBoat(index)
 {
-  for (let i = 0; i < barcos.length; i++) {
+  for (var i = 0; i < boats.length; i++) {
+    if (balls[index] !== undefined && boats[i] !== undefined) {
+      var collision = Matter.SAT.collides(balls[index].body, boats[i].body);
+      if (collision.collided) {
 
-    if (bolas[indiceBola] !== undefined && barcos[i] !== undefined) {
-      var teveColisao = Matter.SAT.collides(bolas[indiceBola].body, barcos[i].esqueleto);
-
-      // se houve colisao
-      if (teveColisao.collided) {
-        if (!barcos[i].estaQuebrado) {
-          barcos[i].remover(i);
+        // verifica se o barco já está quebrado, e só quebra quando não foi quebrado ainda
+        if (!boats[i].isBroken) {
+          boats[i].remove(i);
         }
 
-        World.remove(world, bolas[indiceBola].body);
-        delete bolas[indiceBola]; 
+        World.remove(world, balls[index].body);
+        delete balls[index];
       }
     }
   }
 }
 
-function gameover()
+function keyReleased() {
+  if (keyCode === DOWN_ARROW) {
+    balls[balls.length - 1].shoot();
+  }
+}
+
+function gameOver()
 {
   swal(
     {
-      title: 'Fim de Jogo!',
-      text: 'Obrigado por Jogar!',
-      imageUrl: './assets/barco.png',
-      imageSize: '150x150',
-      confirmButtonText: 'jogar novamente'
+      title: "Fim de Jogo!",
+      text: "Obrigada por jogar!",
+      imageUrl: "./assets/boat.png",
+      imageSize: "150x150",
+      confirmButtonText: "Jogar novamente"
     },
-    function (isConfirm){
+    function (isConfirm) {
       if (isConfirm) {
         location.reload();
       }
     }
   );
+
 }
