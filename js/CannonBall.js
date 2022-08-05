@@ -1,70 +1,63 @@
 class CannonBall {
+
   constructor(x, y) {
     var options = {
       isStatic: true
     };
-    this.r = 30;
-    this.body = Bodies.circle(x, y, this.r, options);
+    
+    this.afundou = false;
+    this.raio = 30;
+    this.velocidade = 0.05;
+    this.body = Bodies.circle(x, y, this.raio, options);
+
     this.image = loadImage("./assets/cannonball.png");
-    this.animation = [this.image];
-    this.trajectory = [];
-    this.speed = 0.05;
-    this.isSink = false;
+    this.animacao = [this.image];
     World.add(world, this.body);
   }
 
-  shoot() {
-     var newAngle = cannon.angle - 28;
-    newAngle = newAngle *(3.14/180)
-    var velocity = p5.Vector.fromAngle(newAngle);
-    velocity.mult(0.5);
-    Matter.Body.setStatic(this.body, false);
-    Matter.Body.setVelocity(this.body, {
-      x: velocity.x *(180/3.14), y: velocity.y * (180/3.14)});
-  }
-
-  display() {
-    var angle = this.body.angle;
+  mostrar() 
+  {
+    var angulo = this.body.angle;
     var pos = this.body.position;
-    var index = floor(this.speed % this.animation.length);
-
+    var movimento = floor(this.velocidade % this.animacao.length);
 
     push();
     translate(pos.x, pos.y);
-    rotate(angle);
+    rotate(angulo);
     imageMode(CENTER);
-    image(this.animation[index], 0, 0, this.r, this.r);
+    image(this.animacao[movimento], 0, 0, this.raio, this.raio);
     pop();
-
-    if (this.body.velocity.x > 0 && pos.x > 10) {
-      var position = [pos.x, pos.y];
-      this.trajectory.push(position);
-    }
-
-    for (var i = 0; i < this.trajectory.length; i++) {
-      image(this.image, this.trajectory[i][0], this.trajectory[i][1], 5, 5);
-    }
   }
 
-  animate()
+  atirar()
   {
-    this.speed += 0.05;
+    var novoangulo = cannon.angulo - 28;
+    novoangulo = novoangulo *(3.14/180);
+
+    var velocidade = p5.Vector.fromAngle(novoangulo);
+    velocidade.mult(0.5);
+
+    Objeto.setStatic(this.body, false);
+    Objeto.setVelocity(this.body, { 
+      x: velocidade.x *(180/3.14), 
+      y: velocidade.y * (180/3.14)
+    });
   }
 
-  remove(index)
-  {
-    this.isSink = true;
-
-    Body.setVelocity(this.body, { x: 0, y: 0 });
-
-    this.animation = waterSplahAnimation;
-    this.speed = 0.05;
-    this.r = 100;
-
-    // obs da Liz: parece o lifetime do trex
-    setTimeout(() => {
-      World.remove(world, this.body);
-      delete balls[index];
-    }, 1000);
-  }
+  animar()
+{
+  this.velocidade += 0.05
+}
+  remover(indiceDaBola)
+    {
+        this.afundou = true;
+        Objeto.setVelocity(this.body,{x:0,y:0});
+        this.animacao = aguaEspirraAnimacao;
+        this.velocitidade = 0.05;
+        this.raio = 100;
+        setTimeout(() => {
+            World.remove(world, this.body);
+            delete bolas[indiceDaBola];
+        }, 1000);
+    }
 }
