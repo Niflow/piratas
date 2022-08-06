@@ -14,6 +14,7 @@ var fimdejogo=false;
 var bolas = [];
 var barcos = [];
 var risadaM,explosaoM,aguaM,fundoM;
+var estaRindo=false;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
@@ -168,6 +169,10 @@ function mostrarBarcos()
         barcos[i].animar();
           var colisao = Matter.SAT.collides(tower,barcos[i].esqueleto);
           if (colisao.collided && !barcos[i].estaQuebrado) {
+            if (!estaRindo && !risadaM.isPlaying()) {
+              risadaM.play();
+              estaRindo=true;
+            }
             fimdejogo = true;
             gameover();
           } 
